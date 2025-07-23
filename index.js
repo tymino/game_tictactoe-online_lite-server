@@ -21,6 +21,10 @@ const onConnection = (socket) => {
   handlerLobby(io, socket)
 }
 
+app.get('/', (req, res) => {
+  res.send('Server is running')
+})
+
 io.on('connection', onConnection)
 
 server.listen(PORT, () => {
