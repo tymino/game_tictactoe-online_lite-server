@@ -22,7 +22,7 @@ const onConnection = (socket) => {
 }
 
 app.get('/', (req, res) => {
-  res.send('Server is running')
+  res.send(`Server is running, ${URL}:${PORT}`)
 })
 
 io.on('connection', onConnection)
