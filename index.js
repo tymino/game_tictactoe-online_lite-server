@@ -17,8 +17,8 @@ const io = new Server(server, {
 const onConnection = (socket) => {
   console.log('New connection:', socket.id)
 
-  handlerLobby(io, socket)
   handlerGame(io, socket)
+  handlerLobby(io, socket)
 }
 
 io.on('connection', onConnection)

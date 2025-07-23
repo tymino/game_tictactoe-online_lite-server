@@ -2,11 +2,16 @@ import { lobbyPlayers } from '../lobby/index.js'
 
 export const activeGames = {}
 
+const addPoints = (room, turn) => {
+  const amountPoints = 10
+  const playerWinner = `player${turn}`
+
+  activeGames[room][playerWinner].score += amountPoints
+}
+
 const toggleTurn = (room) => {
   const game = activeGames[room]
-  if (game.winner === null) {
-    game.turn = game.turn === 0 ? 1 : 0
-  }
+  game.turn = game.turn === 0 ? 1 : 0
 }
 
 const checkWinningLines = (board) => {
@@ -38,7 +43,11 @@ const checkGameWinner = (room) => {
   const { board } = activeGames[room]
 
   if (checkWinningLines(board)) {
-    return activeGames[room].turn
+    const turn = activeGames[room].turn
+
+    addPoints(room, turn)
+
+    return turn
   }
 
   if (!board.includes(null)) {
@@ -74,12 +83,16 @@ export const updateGame = (room, index) => {
   const game = activeGames[room]
 
   if (game.board[index] !== null) {
-    return game
+    return
   }
 
   game.board[index] = game.turn
   game.winner = checkGameWinner(room)
   toggleTurn(room)
+}
 
-  return game
+export const clearBoard = (room) => {
+  const game = activeGames[room]
+  game.board = Array(9).fill(null)
+  game.winner = null
 }

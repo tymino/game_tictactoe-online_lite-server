@@ -5,7 +5,7 @@ import {
   setWaitingPlayer,
   roomConnectKey,
 } from '../lobby/index.js'
-import { activeGames, createGame } from '../game/index.js'
+import { createGame } from '../game/index.js'
 
 const createPlayer = (socketID) => {
   const player = {
@@ -47,6 +47,11 @@ export const handlerLobby = (io, socket) => {
   lobbyPlayers[socket.id] = connectedPlayers[socket.id]
   sendLobbyState()
 
+  socket.on('lobby:join', () => {
+    lobbyPlayers[socket.id] = connectedPlayers[socket.id]
+    sendLobbyState()
+  })
+
   socket.on('player:name', (name) => {
     if (name.length > 0) {
       lobbyPlayers[socket.id].name = name
@@ -54,20 +59,20 @@ export const handlerLobby = (io, socket) => {
     }
   })
 
-  // socket.on('player:ready', (response) => {
-  if (waitingPlayer) {
-    if (waitingPlayer.id === socket.id) {
-      setWaitingPlayer(null)
-      // response(false)
+  socket.on('player:ready', (response) => {
+    if (waitingPlayer) {
+      if (waitingPlayer.id === socket.id) {
+        setWaitingPlayer(null)
+        response(false)
+      } else {
+        createGameRoom()
+      }
     } else {
-      createGameRoom()
+      setWaitingPlayer(socket)
+      console.log('waitingPlayer', waitingPlayer.id)
+      response(true)
     }
-  } else {
-    setWaitingPlayer(socket)
-    console.log('waitingPlayer', waitingPlayer.id)
-    // response(true)
-  }
-  // })
+  })
 
   socket.on('disconnect', () => {
     console.log('Disconnected lobby: ', socket.id)
@@ -78,6 +83,7 @@ export const handlerLobby = (io, socket) => {
 
     delete connectedPlayers[socket.id]
     delete lobbyPlayers[socket.id]
+
     sendLobbyState()
   })
 }
