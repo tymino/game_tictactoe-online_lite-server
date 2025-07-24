@@ -14,16 +14,16 @@ const io = new Server(server, {
   cors: { origin: `*` },
 })
 
+app.get('/', (req, res) => {
+  res.send(`Server is running, ${URL}:${PORT}`)
+})
+
 const onConnection = (socket) => {
   console.log('New connection:', socket.id)
 
   handlerGame(io, socket)
   handlerLobby(io, socket)
 }
-
-app.get('/', (req, res) => {
-  res.send(`Server is running, ${URL}:${PORT}`)
-})
 
 io.on('connection', onConnection)
 

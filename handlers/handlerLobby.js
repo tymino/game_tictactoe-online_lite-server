@@ -22,7 +22,6 @@ export const handlerLobby = (io, socket) => {
   }
 
   const createGameRoom = () => {
-    // создаем комнату для двух игроков
     console.log(`Create game for: ${waitingPlayer.id}, ${socket.id}`)
     const room = `${waitingPlayer.id}${roomConnectKey}${socket.id}`
 
